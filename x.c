@@ -711,7 +711,7 @@ brelease(XEvent *e)
 
 	if (mouseaction(e, 1))
 		return;
-	if (e->xbutton.button == Button3)
+	if (e->xbutton.button == Button1)
 		mousesel(e, 1);
 }
 
@@ -2163,4 +2163,3 @@ run:
 
 	return 0;
 }
-
