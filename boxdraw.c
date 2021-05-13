@@ -192,3 +192,4 @@ drawboxlines(int x, int y, int w, int h, XftColor *fg, ushort bd)
 		}
 	}
 }
+
