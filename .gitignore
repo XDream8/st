@@ -1,3 +1,5 @@
-
 st
 x.o
+hb.o
+boxdraw.o
+config.h
