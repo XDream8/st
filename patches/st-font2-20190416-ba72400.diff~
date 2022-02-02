@@ -12,10 +12,10 @@ Subject: [PATCH] This patch allows to add spare font besides default. Some
  x.c          | 101 +++++++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 107 insertions(+)
 
-Index: st-0.8.5/config.def.h
-===================================================================
---- st-0.8.5.orig/config.def.h
-+++ st-0.8.5/config.def.h
+diff --git a/config.def.h b/config.def.h
+index 482901e..676719e 100644
+--- a/config.def.h
++++ b/config.def.h
 @@ -6,6 +6,12 @@
   * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
   */
@@ -29,20 +29,20 @@ Index: st-0.8.5/config.def.h
  static int borderpx = 2;
  
  /*
-Index: st-0.8.5/x.c
-===================================================================
---- st-0.8.5.orig/x.c
-+++ st-0.8.5/x.c
-@@ -171,6 +171,8 @@ static void xhints(void);
+diff --git a/x.c b/x.c
+index 5828a3b..d37e59d 100644
+--- a/x.c
++++ b/x.c
+@@ -149,6 +149,8 @@ static void xhints(void);
  static int xloadcolor(int, const char *, Color *);
  static int xloadfont(Font *, FcPattern *);
- static void xloadfonts(const char *, double);
+ static void xloadfonts(char *, double);
 +static int xloadsparefont(FcPattern *, int);
 +static void xloadsparefonts(void);
  static void xunloadfont(Font *);
  static void xunloadfonts(void);
  static void xsetenv(void);
-@@ -320,6 +322,7 @@ zoomabs(const Arg *arg)
+@@ -296,6 +298,7 @@ zoomabs(const Arg *arg)
  {
  	xunloadfonts();
  	xloadfonts(usedfont, arg->f);
@@ -50,7 +50,7 @@ Index: st-0.8.5/x.c
  	cresize(0, 0);
  	redraw();
  	xhints();
-@@ -1049,6 +1052,101 @@ xloadfonts(const char *fontstr, double f
+@@ -977,6 +980,101 @@ xloadfonts(char *fontstr, double fontsize)
  	FcPatternDestroy(pattern);
  }
  
@@ -152,7 +152,7 @@ Index: st-0.8.5/x.c
  void
  xunloadfont(Font *f)
  {
-@@ -1144,6 +1242,9 @@ xinit(int cols, int rows)
+@@ -1057,6 +1155,9 @@ xinit(int cols, int rows)
  	usedfont = (opt_font == NULL)? font : opt_font;
  	xloadfonts(usedfont, 0);
  
@@ -162,3 +162,6 @@ Index: st-0.8.5/x.c
  	/* colors */
  	xw.cmap = XDefaultColormap(xw.dpy, xw.scr);
  	xloadcols();
+-- 
+2.21.0
+

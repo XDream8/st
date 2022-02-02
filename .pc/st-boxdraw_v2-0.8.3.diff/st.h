@@ -81,6 +81,8 @@ void die(const char *, ...);
 void redraw(void);
 void draw(void);
 
+void kscrolldown(const Arg *);
+void kscrollup(const Arg *);
 void printscreen(const Arg *);
 void printsel(const Arg *);
 void sendbreak(const Arg *);
@@ -91,7 +93,7 @@ void tnew(int, int);
 void tresize(int, int);
 void tsetdirtattr(int);
 void ttyhangup(void);
-int ttynew(char *, char *, char *, char **);
+int ttynew(const char *, char *, const char *, char **);
 size_t ttyread(void);
 void ttyresize(int, int);
 void ttywrite(const char *, size_t, int);
@@ -109,7 +111,9 @@ size_t utf8encode(Rune, char *);
 
 void *xmalloc(size_t);
 void *xrealloc(void *, size_t);
-char *xstrdup(char *);
+char *xstrdup(const char *);
+
+int xgetcolor(int x, unsigned char *r, unsigned char *g, unsigned char *b);
 
 /* config.h globals */
 extern char *utmp;
@@ -123,4 +127,4 @@ extern char *termname;
 extern unsigned int tabspaces;
 extern unsigned int defaultfg;
 extern unsigned int defaultbg;
-extern float alpha;
+extern unsigned int defaultcs;

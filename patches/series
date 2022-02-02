@@ -1,11 +1,10 @@
-st-alpha-0.8.2.diff
-st-boxdraw_v2-0.8.3.diff
 st-scrollback-0.8.4.diff
-st-scrollback-mouse-20191024-a2c479c.diff
-st-scrollback-mouse-altscreen-20200416-5703aa0.diff
-st-w3m-0.8.3.diff
 st-xresources-20200604-9ba7ecf.diff
-st-ligatures-20200430-0.8.3.diff
 st-clipboard-0.8.3.diff
-st-anysize-0.8.4.diff
+st-boxdraw_v2-0.8.3.diff
 st-font2-20190416-ba72400.diff
+st-w3m-0.8.3.diff
+st-bold-is-not-bright-20190127-3be4cf1.diff
+st-dynamic-cursor-color-0.8.4.diff
+st-disable-bold-italic-fonts-0.8.2.diff
+st-anysize-0.8.4.diff

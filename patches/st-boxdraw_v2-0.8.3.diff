@@ -30,10 +30,10 @@ boxdraw/braille are independent, disabled by default at config[.def].h
  create mode 100644 boxdraw.c
  create mode 100644 boxdraw_data.h
 
-Index: st-0.8.4/Makefile
+Index: st-0.8.5/Makefile
 ===================================================================
---- st-0.8.4.orig/Makefile
-+++ st-0.8.4/Makefile
+--- st-0.8.5.orig/Makefile
++++ st-0.8.5/Makefile
 @@ -4,7 +4,7 @@
  
  include config.mk
@@ -51,10 +51,10 @@ Index: st-0.8.4/Makefile
  
  $(OBJ): config.h config.mk
  
-Index: st-0.8.4/boxdraw.c
+Index: st-0.8.5/boxdraw.c
 ===================================================================
 --- /dev/null
-+++ st-0.8.4/boxdraw.c
++++ st-0.8.5/boxdraw.c
 @@ -0,0 +1,194 @@
 +/*
 + * Copyright 2018 Avi Halachmi (:avih) avihpit@yahoo.com https://github.com/avih
@@ -250,10 +250,10 @@ Index: st-0.8.4/boxdraw.c
 +		}
 +	}
 +}
-Index: st-0.8.4/boxdraw_data.h
+Index: st-0.8.5/boxdraw_data.h
 ===================================================================
 --- /dev/null
-+++ st-0.8.4/boxdraw_data.h
++++ st-0.8.5/boxdraw_data.h
 @@ -0,0 +1,214 @@
 +/*
 + * Copyright 2018 Avi Halachmi (:avih) avihpit@yahoo.com https://github.com/avih
@@ -469,10 +469,10 @@ Index: st-0.8.4/boxdraw_data.h
 +	/* U+2504 - U+250B, U+254C - U+254F: unsupported (dashes) */
 +	/* U+2571 - U+2573: unsupported (diagonals) */
 +};
-Index: st-0.8.4/config.def.h
+Index: st-0.8.5/config.def.h
 ===================================================================
---- st-0.8.4.orig/config.def.h
-+++ st-0.8.4/config.def.h
+--- st-0.8.5.orig/config.def.h
++++ st-0.8.5/config.def.h
 @@ -68,6 +68,18 @@ static unsigned int blinktimeout = 800;
  static unsigned int cursorthickness = 2;
  
@@ -492,11 +492,11 @@ Index: st-0.8.4/config.def.h
   * bell volume. It must be a value between -100 and 100. Use 0 for disabling
   * it
   */
-Index: st-0.8.4/st.c
+Index: st-0.8.5/st.c
 ===================================================================
---- st-0.8.4.orig/st.c
-+++ st-0.8.4/st.c
-@@ -1219,6 +1219,9 @@ tsetchar(Rune u, Glyph *attr, int x, int
+--- st-0.8.5.orig/st.c
++++ st-0.8.5/st.c
+@@ -1284,6 +1284,9 @@ tsetchar(Rune u, const Glyph *attr, int
  	term.dirty[y] = 1;
  	term.line[y][x] = *attr;
  	term.line[y][x].u = u;
@@ -506,10 +506,10 @@ Index: st-0.8.4/st.c
  }
  
  void
-Index: st-0.8.4/st.h
+Index: st-0.8.5/st.h
 ===================================================================
---- st-0.8.4.orig/st.h
-+++ st-0.8.4/st.h
+--- st-0.8.5.orig/st.h
++++ st-0.8.5/st.h
 @@ -33,6 +33,7 @@ enum glyph_attribute {
  	ATTR_WRAP       = 1 << 8,
  	ATTR_WIDE       = 1 << 9,
@@ -518,9 +518,9 @@ Index: st-0.8.4/st.h
  	ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
  };
  
-@@ -111,6 +112,14 @@ void *xmalloc(size_t);
- void *xrealloc(void *, size_t);
- char *xstrdup(char *);
+@@ -115,6 +116,14 @@ char *xstrdup(const char *);
+ 
+ int xgetcolor(int x, unsigned char *r, unsigned char *g, unsigned char *b);
  
 +int isboxdraw(Rune);
 +ushort boxdrawindex(const Glyph *);
@@ -533,17 +533,16 @@ Index: st-0.8.4/st.h
  /* config.h globals */
  extern char *utmp;
  extern char *scroll;
-@@ -124,3 +133,5 @@ extern unsigned int tabspaces;
+@@ -128,3 +137,4 @@ extern unsigned int tabspaces;
  extern unsigned int defaultfg;
  extern unsigned int defaultbg;
- extern float alpha;
+ extern unsigned int defaultcs;
 +extern const int boxdraw, boxdraw_bold, boxdraw_braille;
-+
-Index: st-0.8.4/x.c
+Index: st-0.8.5/x.c
 ===================================================================
---- st-0.8.4.orig/x.c
-+++ st-0.8.4/x.c
-@@ -1222,6 +1222,8 @@ xinit(int cols, int rows)
+--- st-0.8.5.orig/x.c
++++ st-0.8.5/x.c
+@@ -1234,6 +1234,8 @@ xinit(int cols, int rows)
  	xsel.xtarget = XInternAtom(xw.dpy, "UTF8_STRING", 0);
  	if (xsel.xtarget == None)
  		xsel.xtarget = XA_STRING;
@@ -552,7 +551,7 @@ Index: st-0.8.4/x.c
  }
  
  int
-@@ -1268,8 +1270,13 @@ xmakeglyphfontspecs(XftGlyphFontSpec *sp
+@@ -1280,8 +1282,13 @@ xmakeglyphfontspecs(XftGlyphFontSpec *sp
  			yp = winy + font->ascent;
  		}
  
@@ -568,7 +567,7 @@ Index: st-0.8.4/x.c
  		if (glyphidx) {
  			specs[numspecs].font = font->match;
  			specs[numspecs].glyph = glyphidx;
-@@ -1473,8 +1480,12 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+@@ -1485,8 +1492,12 @@ xdrawglyphfontspecs(const XftGlyphFontSp
  	r.width = width;
  	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
  
@@ -583,7 +582,7 @@ Index: st-0.8.4/x.c
  
  	/* Render underline and strikethrough. */
  	if (base.mode & ATTR_UNDERLINE) {
-@@ -1517,7 +1528,7 @@ xdrawcursor(int cx, int cy, Glyph g, int
+@@ -1529,7 +1540,7 @@ xdrawcursor(int cx, int cy, Glyph g, int
  	/*
  	 * Select the right color for the right mode.
  	 */
